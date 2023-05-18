@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import { ChangeEvent, Ref, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 interface InputStepperProps {
@@ -11,7 +11,10 @@ interface InputStepperStyleProps {
   $size: InputStepperProps['size'];
 }
 
-const InputStepper = ({ size, quantity, setQuantity }: InputStepperProps) => {
+const InputStepper = (
+  { size, quantity, setQuantity }: InputStepperProps,
+  ref: Ref<HTMLDivElement>,
+) => {
   const changeText = (e: ChangeEvent<HTMLInputElement>) => {
     const checkNumberRegExp = /^\d{1,2}$/;
     if (!checkNumberRegExp.test(e.target.value)) return;
@@ -22,7 +25,7 @@ const InputStepper = ({ size, quantity, setQuantity }: InputStepperProps) => {
   };
 
   return (
-    <InputStepperWrapper>
+    <InputStepperWrapper ref={ref}>
       <InputStyle $size={size} type="text" value={quantity} onChange={changeText} />
       <StepperButtonWrapper>
         <StepperUpButton $size={size} onClick={() => setQuantity(quantity + 1)}>
@@ -36,7 +39,7 @@ const InputStepper = ({ size, quantity, setQuantity }: InputStepperProps) => {
   );
 };
 
-export default InputStepper;
+export default forwardRef(InputStepper);
 
 const InputStepperWrapper = styled.div`
   display: flex;

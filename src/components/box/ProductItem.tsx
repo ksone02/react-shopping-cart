@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { CartIcon } from '../../assets';
 import type { CartItem, Product } from '../../types/types';
@@ -8,6 +8,7 @@ import InputStepper from '../common/InputStepper/InputStepper';
 import { cartListState } from '../../service/atom';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import getPriceFormat from '../../utils/getPriceFormat';
+import { gsap } from 'gsap';
 
 const ProductItem = ({ product }: { product: Product }) => {
   const { localStorageData } = useLocalStorage<CartItem[]>('cartList', []);
@@ -17,6 +18,40 @@ const ProductItem = ({ product }: { product: Product }) => {
   );
 
   const [cartList, setCartList] = useRecoilState(cartListState);
+
+  const [cartState, setCartState] = useState(false);
+
+  const cartIconRef = useRef(null);
+  const inputStepperRef = useRef(null);
+
+  useEffect(() => {
+    if (quantity > 0) {
+      setCartState(true);
+      return;
+    }
+    setTimeout(() => {
+      setCartState(false);
+    }, 200);
+  }, [quantity]);
+
+  useEffect(() => {
+    if (quantity > 0) {
+      gsap.fromTo(cartIconRef.current, { opacity: 0, delay: 0.3, ease: 'ease' }, { opacity: 1 });
+      gsap.fromTo(
+        inputStepperRef.current,
+        { opacity: 0, delay: 0.3, ease: 'ease' },
+        { opacity: 1 },
+      );
+    }
+    if (quantity === 0) {
+      gsap.fromTo(
+        inputStepperRef.current,
+        { opacity: 1, delay: 0.3, ease: 'ease' },
+        { opacity: 0 },
+      );
+      gsap.fromTo(cartIconRef.current, { opacity: 0, delay: 0.3, ease: 'ease' }, { opacity: 1 });
+    }
+  }, [quantity, cartState]);
 
   const updateCartList = (existItemIndex: number) => {
     const newCartItem: CartItem = {
@@ -68,8 +103,9 @@ const ProductItem = ({ product }: { product: Product }) => {
             {getPriceFormat(product.price)} 원
           </Text>
         </ProductTextWrapper>
-        {quantity === 0 ? (
+        {!cartState ? (
           <CartIcon
+            ref={cartIconRef}
             width={25}
             height={22}
             fill="#AAAAAA"
@@ -78,6 +114,7 @@ const ProductItem = ({ product }: { product: Product }) => {
           />
         ) : (
           <InputStepper
+            ref={inputStepperRef}
             size="small"
             quantity={quantity}
             setQuantity={(value: number) => setQuantity(value)}
@@ -99,10 +136,11 @@ const ProductWrapper = styled.div`
 const ProductImage = styled.img`
   width: 100%;
   height: 282px;
-  transition: all 0.3s ease-out;
+  transition: all 0.32s ease;
 
   &:hover {
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 1px 14px 24px hsla(218, 53%, 10%, 12%);
   }
 `;
 
