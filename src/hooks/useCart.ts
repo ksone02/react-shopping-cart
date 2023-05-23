@@ -42,7 +42,6 @@ export const useCart = () => {
   );
 
   const addCartItemAPI = (body?: object) => {
-    console.log('??');
     fetchAddCartItem.mutate({ body });
   };
 
@@ -53,7 +52,6 @@ export const useCart = () => {
 
   return {
     data,
-    refetch,
     addCartItemAPI,
     changeCartQuantityAPI,
     deleteCartItemAPI,

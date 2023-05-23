@@ -19,15 +19,14 @@ const ProductItem = ({ product }: { product: Product }) => {
   useEffect(() => {
     const mutateCartItem = async () => {
       if (data) {
-        const findData = data.find((data) => data.product.id === product.id);
-        if (findData && findData.quantity !== quantity) {
+        if (cartItemData && cartItemData.quantity !== quantity) {
           if (quantity > 0) {
             cartId && changeCartQuantityAPI(cartId, { quantity });
             return;
           }
           cartId && deleteCartItemAPI(cartId);
         }
-        if (quantity > 0 && !findData) {
+        if (quantity > 0 && !cartItemData) {
           addCartItemAPI({ productId: product.id });
         }
       }

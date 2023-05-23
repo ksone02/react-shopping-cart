@@ -1,7 +1,7 @@
 import PageTemplate from '../templates/PageTemplate';
 import ProductList from '../list/ProductList/ProductList';
 
-const ShoppingPage = () => {
+const ProductPage = () => {
   return (
     <PageTemplate
       title="장바구니 미션 - 쇼핑페이지"
@@ -12,4 +12,4 @@ const ShoppingPage = () => {
   );
 };
 
-export default ShoppingPage;
+export default ProductPage;
